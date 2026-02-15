@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZF</title>
+
+<style>
+
+/* ---------------- BACKGROUND ---------------- */
+
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Courier New, monospace;
+  background:#f3e2c7;
+  position:relative;
+}
+
+/* Tiny brown hearts pattern (20% opacity) */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>\
+<text x='0' y='20' font-size='18' fill='brown' fill-opacity='0.2'>❤</text>\
+</svg>");
+  background-size:40px 40px;
+  opacity:0.2;
+  pointer-events:none;
+}
+
+/* Texture overlay */
+body::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.03),
+    rgba(0,0,0,0.03) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events:none;
+}
+
+/* ---------------- CENTER BOX ---------------- */
+
+#scene{
+  text-align:center;
+  padding:20px;
+  max-width:90%;
+  z-index:2;
+}
+
+/* ---------------- TYPEWRITER ---------------- */
+
+.typewriter{
+  font-size:20px;
+  border-right:3px solid brown;
+  white-space:nowrap;
+  overflow:hidden;
+  width:0;
+  margin:auto;
+  animation:
+    typing 4s steps(60,end) forwards,
+    blink .7s infinite;
+}
+
+@keyframes typing{
+  to{width:100%}
+}
+
+@keyframes blink{
+  50%{border-color:transparent}
+}
+
+/* Fade down */
+.fadeDown{
+  animation:fadeDown 2s forwards;
+}
+
+@keyframes fadeDown{
+  to{
+    opacity:0;
+    transform:translateY(50px);
+  }
+}
+
+/* ---------------- SCATTER TEXT ---------------- */
+
+.scatter span{
+  display:inline-block;
+  animation:scatter 2s forwards;
+}
+
+@keyframes scatter{
+  to{
+    transform:
+      translate(
+        calc(-250px + 500px * var(--x)),
+        calc(-250px + 500px * var(--y))
+      )
+      rotate(720deg);
+    opacity:0;
+  }
+}
+
+/* ---------------- PIXEL HEART ---------------- */
+
+.pixel-heart{
+  width:180px;
+  height:180px;
+  background:#ff7a7a;
+  position:relative;
+  margin:20px auto;
+  transform:scale(0);
+}
+
+.pixel-heart:before,
+.pixel-heart:after{
+  content:"";
+  width:180px;
+  height:180px;
+  background:#ff7a7a;
+  position:absolute;
+  border-radius:50%;
+}
+
+.pixel-heart:before{
+  top:-90px;
+  left:0;
+}
+
+.pixel-heart:after{
+  left:90px;
+  top:0;
+}
+
+/* Zoom animation */
+.zoomHeart{
+  animation:zoomHeart 2s forwards;
+}
+
+@keyframes zoomHeart{
+  to{transform:scale(.5)}
+}
+
+/* Text on heart */
+.heartText{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:white;
+  font-size:14px;
+  text-align:center;
+  padding:10px;
+}
+
+/* Tap sign */
+.tap{
+  margin-top:20px;
+  font-size:18px;
+  animation:tapBlink 1s infinite;
+  cursor:pointer;
+}
+
+@keyframes tapBlink{
+  50%{opacity:.3}
+}
+
+/* ---------------- KISS EMOJIS ---------------- */
+
+.kiss{
+  position:absolute;
+  font-size:26px;
+  animation:kissFly 3s linear forwards;
+}
+
+@keyframes kissFly{
+  from{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+  to{
+    transform:translateY(-400px) scale(1.6);
+    opacity:0;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="scene">
+
+  <!-- FIRST TEXT -->
+  <div id="text1" class="typewriter">
+    MR. FAKHRUDDIN YOU ARE MINE. JUST MINE. YOU BELONG TO ZAHRA SHAKIR
+  </div>
+
+</div>
+
+<script>
+
+/* Fade first text */
+setTimeout(()=>{
+  text1.classList.add("fadeDown");
+},5000);
+
+/* Second text appears */
+setTimeout(()=>{
+
+  const t2=document.createElement("div");
+  t2.id="text2";
+  t2.innerText="IM YOUR WIFE… ZAHRA FAKHRUDDIN. FOREVER";
+  scene.appendChild(t2);
+
+  setTimeout(()=>scatterText(t2),2000);
+
+},6500);
+
+/* Scatter function */
+function scatterText(el){
+
+  const chars=el.innerText.split("");
+  el.innerHTML="";
+
+  chars.forEach(c=>{
+    const span=document.createElement("span");
+    span.innerText=c;
+    span.style.setProperty("--x",Math.random());
+    span.style.setProperty("--y",Math.random());
+    el.appendChild(span);
+  });
+
+  el.classList.add("scatter");
+}
+
+/* Heart appears */
+setTimeout(()=>{
+
+  const heart=document.createElement("div");
+  heart.className="pixel-heart zoomHeart";
+
+  const text=document.createElement("div");
+  text.className="heartText";
+  text.innerText="WE ARE ONE UNIT, I LOVE YOU SOO MUCH ❤️";
+
+  heart.appendChild(text);
+  scene.appendChild(heart);
+
+  const tap=document.createElement("div");
+  tap.className="tap";
+  tap.innerText="Tap Me 💕";
+  tap.onclick=finalScene;
+
+  scene.appendChild(tap);
+
+},10000);
+
+/* Final tap scene */
+function finalScene(){
+
+  scene.innerHTML="";
+
+  for(let i=0;i<30;i++){
+    const kiss=document.createElement("div");
+    kiss.className="kiss";
+    kiss.innerText="😘";
+    kiss.style.left=Math.random()*100+"vw";
+    kiss.style.top=Math.random()*100+"vh";
+    document.body.appendChild(kiss);
+  }
+
+  /* Return to original bg */
+  setTimeout(()=>{
+    document.body.innerHTML="";
+  },3000);
+}
+
+</script>
+
+</body>
+</html>
